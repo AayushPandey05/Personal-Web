@@ -879,7 +879,8 @@ img {
   will-change: transform;
 }
 
-.detail-card:hover {
+.detail-card:hover,
+.detail-card.touch-active {
   background: var(--bg-card-hover);
   border-color: rgba(0, 212, 255, 0.2);
 }
@@ -894,6 +895,18 @@ img {
   background: var(--bg-card);
   border-radius: var(--radius-sm);
   flex-shrink: 0;
+  color: var(--accent-1);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.detail-icon svg {
+  stroke: var(--accent-1);
+  transition: stroke var(--transition-fast), transform var(--transition-fast);
+}
+
+.detail-card:hover .detail-icon svg,
+.detail-card.touch-active .detail-icon svg {
+  transform: scale(1.15);
 }
 
 .detail-label {
@@ -967,6 +980,7 @@ img {
 }
 
 .skill-card {
+  position: relative;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
@@ -976,9 +990,11 @@ img {
     border-color var(--transition-fast),
     transform var(--transition-fast);
   will-change: transform;
+  overflow: hidden;
 }
 
-.skill-card:hover {
+.skill-card:hover,
+.skill-card.touch-active {
   background: var(--bg-card-hover);
   border-color: rgba(0, 212, 255, 0.2);
 }
@@ -1080,11 +1096,13 @@ img {
   pointer-events: none;
 }
 
-.project-card:hover::before {
+.project-card:hover::before,
+.project-card.touch-active::before {
   opacity: 1;
 }
 
-.project-card:hover {
+.project-card:hover,
+.project-card.touch-active {
   background: var(--bg-card-hover);
   border-color: rgba(0, 212, 255, 0.25);
 }
@@ -1115,7 +1133,8 @@ img {
   transition: color var(--transition-fast);
 }
 
-.project-card:hover .project-title {
+.project-card:hover .project-title,
+.project-card.touch-active .project-title {
   color: var(--accent-1);
 }
 
@@ -1158,11 +1177,308 @@ img {
   transition: all var(--transition-smooth);
 }
 
-.project-card:hover .project-arrow {
+.project-card:hover .project-arrow,
+.project-card.touch-active .project-arrow {
   background: var(--accent-1);
   border-color: var(--accent-1);
   color: var(--bg-primary);
   transform: scale(1.1);
+}
+
+/* ==================================
+   CERTIFICATIONS SECTION
+================================== */
+.certifications {
+  background: var(--bg-secondary);
+}
+
+.cert-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  min-width: 3.2rem;
+  height: 3.2rem;
+  padding: 0 0.8rem;
+  border-radius: 20px;
+  background: var(--gradient-accent);
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  vertical-align: super;
+  margin-left: 1rem;
+  animation: badgePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(0, 212, 255, 0); }
+}
+
+.cert-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: calc(5 * 96px); /* show ~5 cards initially */
+  overflow: hidden;
+  transition: max-height 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.cert-timeline.expanded {
+  max-height: 5000px;
+}
+
+/* Fade overlay when collapsed */
+.cert-timeline::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, var(--bg-secondary));
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  z-index: 2;
+}
+
+.cert-timeline.expanded::after {
+  opacity: 0;
+}
+
+/* Individual cert card */
+.cert-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 2.5rem;
+  background: transparent;
+  border-bottom: 1px solid var(--glass-border);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+  will-change: transform;
+  overflow: hidden;
+}
+
+/* Animated left accent bar */
+.cert-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: var(--gradient-accent);
+  border-radius: 0 3px 3px 0;
+  transition: height var(--transition-smooth);
+}
+
+.cert-card:hover::before,
+.cert-card.touch-active::before {
+  height: 60%;
+}
+
+/* Spotlight glow on hover */
+.cert-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 10% 50%,
+    rgba(0, 212, 255, 0.06) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--transition-smooth);
+  pointer-events: none;
+}
+
+.cert-card:hover::after,
+.cert-card.touch-active::after {
+  opacity: 1;
+}
+
+.cert-card:hover,
+.cert-card.touch-active {
+  background: var(--bg-card-hover);
+  border-color: rgba(0, 212, 255, 0.15);
+}
+
+/* Icon badge */
+.cert-icon-wrap {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.cert-card:hover .cert-icon-wrap,
+.cert-card.touch-active .cert-icon-wrap {
+  border-color: rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.08);
+  transform: scale(1.08);
+}
+
+.cert-icon {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Body */
+.cert-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.cert-title {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cert-card:hover .cert-title,
+.cert-card.touch-active .cert-title {
+  color: var(--accent-1);
+}
+
+.cert-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.cert-issuer {
+  font-size: 1.3rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.cert-date {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  position: relative;
+  padding-left: 1.2rem;
+}
+
+.cert-date::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+/* External link arrow */
+.cert-link {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.cert-card:hover .cert-link,
+.cert-card.touch-active .cert-link {
+  color: var(--bg-primary);
+  background: var(--accent-1);
+  border-color: var(--accent-1);
+  transform: scale(1.1) rotate(-5deg);
+}
+
+/* Stagger-reveal delays for cert cards */
+.cert-card:nth-child(1) { transition-delay: 0s; }
+.cert-card:nth-child(2) { transition-delay: 0.06s; }
+.cert-card:nth-child(3) { transition-delay: 0.12s; }
+.cert-card:nth-child(4) { transition-delay: 0.18s; }
+.cert-card:nth-child(5) { transition-delay: 0.24s; }
+
+/* Show More / Less toggle */
+.cert-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.cert-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.2rem 3rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: manipulation;
+}
+
+.cert-toggle-btn:hover {
+  border-color: var(--accent-1);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+
+.cert-toggle-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.cert-toggle-arrow {
+  transition: transform var(--transition-smooth);
+}
+
+.cert-toggle-btn.active .cert-toggle-arrow {
+  transform: rotate(180deg);
 }
 
 /* ==================================
@@ -1200,7 +1516,8 @@ img {
   will-change: transform;
 }
 
-.contact-card:hover {
+.contact-card:hover,
+.contact-card.touch-active {
   background: var(--bg-card-hover);
   border-color: rgba(0, 212, 255, 0.2);
 }
@@ -1215,6 +1532,18 @@ img {
   background: var(--bg-card);
   border-radius: var(--radius-sm);
   flex-shrink: 0;
+  color: var(--accent-1);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.contact-icon svg {
+  stroke: var(--accent-1);
+  transition: stroke var(--transition-fast), transform var(--transition-fast);
+}
+
+.contact-card:hover .contact-icon svg,
+.contact-card.touch-active .contact-icon svg {
+  transform: scale(1.15);
 }
 
 .contact-label {
@@ -1381,6 +1710,121 @@ a.contact-value:hover {
 }
 
 /* ==================================
+   CERT ICON SVG STYLING
+================================== */
+.cert-icon svg {
+  stroke: var(--accent-1);
+  transition: stroke var(--transition-fast), transform var(--transition-fast);
+}
+
+.cert-card:hover .cert-icon svg,
+.cert-card.touch-active .cert-icon svg {
+  transform: scale(1.15);
+}
+
+/* ==================================
+   CARD SHINE SWEEP (interactive)
+================================== */
+.project-card::after,
+.skill-card::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 55%,
+    transparent 100%
+  );
+  transform: rotate(30deg) translateX(-100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.project-card:hover::after,
+.project-card.touch-active::after,
+.skill-card:hover::after,
+.skill-card.touch-active::after {
+  animation: shineSweep 0.8s ease-out forwards;
+}
+
+@keyframes shineSweep {
+  from {
+    transform: rotate(30deg) translateX(-100%);
+  }
+  to {
+    transform: rotate(30deg) translateX(100%);
+  }
+}
+
+/* ==================================
+   FLOATING SCROLL INDICATOR
+================================== */
+.hero-scroll-indicator {
+  animation: floatUpDown 2.5s ease-in-out infinite;
+}
+
+@keyframes floatUpDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* ==================================
+   STAT COUNTER PULSE
+================================== */
+.stat-number.counted {
+  animation: statPulse 0.6s ease-out;
+}
+
+@keyframes statPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* ==================================
+   SKILL BAR SHIMMER
+================================== */
+.skill-fill.animated::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 100%
+  );
+  animation: skillShimmer 2s ease-in-out infinite;
+}
+
+@keyframes skillShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* ==================================
+   TOUCH PRESS FEEDBACK
+================================== */
+.touch-active {
+  transform: scale(0.98) !important;
+  transition: transform 0.15s ease-out !important;
+}
+
+/* Section heading parallax container */
+.section-heading {
+  transition: transform 0.3s ease-out;
+}
+
+/* ==================================
    SCROLL REVEAL
 ================================== */
 .reveal {
@@ -1433,6 +1877,14 @@ a.contact-value:hover {
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 4rem;
+  }
+  .cert-card {
+    padding: 1.8rem 2rem;
+  }
+  .cert-icon-wrap {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
   }
 }
 
@@ -1587,6 +2039,30 @@ a.contact-value:hover {
 
   .contact-card {
     padding: 2rem;
+  }
+
+  .cert-card {
+    padding: 1.5rem 1.5rem;
+    gap: 1.2rem;
+  }
+  .cert-icon-wrap {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+  }
+  .cert-title {
+    font-size: 1.4rem;
+  }
+  .cert-issuer {
+    font-size: 1.2rem;
+  }
+  .cert-link {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+  .cert-timeline {
+    max-height: calc(4 * 80px);
   }
 
   .footer-container {
